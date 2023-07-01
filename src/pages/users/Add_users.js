@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import React from "react";
+import Layout from "../../components/Layout";
 
 export default function Add_users() {
     const [values, setValues] = React.useState({
@@ -105,7 +106,7 @@ export default function Add_users() {
     };
 
     return (
-        <>
+        <Layout>
             {success && (
                 <Alert severity="success" sx={{ width: 500 }}>
                     {success}
@@ -240,6 +241,7 @@ export default function Add_users() {
                         }}
                         onChange={handleChange("userRole")}
                     >
+                        <option value="">Select role</option>
                         <option value="Admin">Admin</option>
                         <option value="User">User</option>
                     </TextField>
@@ -285,6 +287,6 @@ export default function Add_users() {
                     Submit
                 </Button>
             </Box>
-        </>
+        </Layout>
     );
 }
