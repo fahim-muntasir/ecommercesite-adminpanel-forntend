@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import { makeStyles } from "@mui/styles";
-import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UseContext } from "../context/context";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -40,6 +40,7 @@ const Login = () => {
     const [error, setError] = useState(false);
 
     const navigate = useNavigate();
+    const { login } = UseContext();
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -54,19 +55,16 @@ const Login = () => {
         setLoading(true);
         setError(false);
 
-        try {
-            const { data } = await axios.post(
-                `${process.env.REACT_APP_BACKEND_API_URL}/login`,
-                { userName: username, password }
-            );
-
-            localStorage.setItem("Auth", data?.token);
-            setLoading(false);
-            navigate("/");
-        } catch ({ response }) {
-            setError(response.data.msg);
-            setLoading(false);
-        }
+        // login
+        login({ userName: username, password }, (response) => {
+            if (response?.error) {
+                setError(response.data.msg);
+                setLoading(false);
+            } else {
+                setLoading(false);
+                navigate("/", { replace: true });
+            }
+        });
     };
 
     return (

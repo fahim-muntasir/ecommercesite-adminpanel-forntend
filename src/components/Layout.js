@@ -21,153 +21,185 @@ import Topbar from "./Topbar";
 const drawerWidth = 240;
 
 const useStyle = makeStyles({
-  active: {
-    background: "#f4f4f4",
-  },
+    active: {
+        background: "#f4f4f4",
+    },
+    menuIcon: {
+        marginRight: "-20px",
+    },
 });
 
 function Layout(props) {
-  const { window, children } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const classes = useStyle();
-  const location = useLocation();
-  const navigate = useNavigate();
+    const { window, children } = props;
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [currentMenu, setCurrentMenu] = React.useState("");
+    const classes = useStyle();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
-  const drawer = (
-    <div>
-      <Toolbar />
-      <List>
-        {Sidebar_menu_items.map((item, index) =>
-          item.path ? (
-            <ListItem
-              button
-              key={item.title}
-              onClick={() => navigate(item.path, { replace: true })}
-              style={
-                location.pathname === item.path
-                  ? { background: "#f4f4f4" }
-                  : null
-              }
+    const drawer = (
+        <div>
+            <Toolbar />
+            <List>
+                {Sidebar_menu_items.map((item, index) =>
+                    item.path ? (
+                        <ListItem
+                            button
+                            key={item.title}
+                            onClick={() =>
+                                navigate(item.path, { replace: true })
+                            }
+                            style={
+                                location.pathname === item.path
+                                    ? { background: "#f4f4f4" }
+                                    : null
+                            }
+                        >
+                            <ListItemIcon className={classes.menuIcon}>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.title} />
+                        </ListItem>
+                    ) : (
+                        <>
+                            <ListItem
+                                button
+                                key={item.title}
+                                onClick={() => {
+                                    setCurrentMenu(
+                                        currentMenu === index ? "" : index
+                                    );
+                                }}
+                                style={
+                                    location.pathname === item.path
+                                        ? { background: "#f4f4f4" }
+                                        : null
+                                }
+                            >
+                                <ListItemIcon className={classes.menuIcon}>
+                                    {item.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={item.title} />
+                                {currentMenu === index ? (
+                                    <ExpandLess />
+                                ) : (
+                                    <ExpandMore />
+                                )}
+                            </ListItem>
+                            <Collapse
+                                in={currentMenu === index}
+                                timeout="auto"
+                                unmountOnExit
+                            >
+                                <List component="div" disablePadding>
+                                    {item.subMenu.map((subItem, subIndex) => (
+                                        <ListItemButton
+                                            key={subItem.title}
+                                            sx={{ pl: 5 }}
+                                            onClick={() =>
+                                                navigate(subItem.path, {
+                                                    replace: true,
+                                                })
+                                            }
+                                            style={
+                                                location.pathname ===
+                                                subItem.path
+                                                    ? { background: "#f4f4f4" }
+                                                    : null
+                                            }
+                                        >
+                                            <ListItemIcon
+                                                className={classes.menuIcon}
+                                            >
+                                                {subItem.icon}
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={subItem.title}
+                                            />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Collapse>
+                        </>
+                    )
+                )}
+            </List>
+        </div>
+    );
+
+    const container =
+        window !== undefined ? () => window().document.body : undefined;
+
+    return (
+        <Box sx={{ display: "flex" }}>
+            <CssBaseline />
+            <AppBar
+                position="fixed"
+                sx={{
+                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    ml: { sm: `${drawerWidth}px` },
+                }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItem>
-          ) : (
-            <>
-              <ListItem
-                button
-                key={item.title}
-                onClick={() => setOpen(!open)}
-                style={
-                  location.pathname === item.path
-                    ? { background: "#f4f4f4" }
-                    : null
-                }
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.title} />
-                {open ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {item.subMenu.map((subItem, subIndex) => (
-                    <ListItemButton
-                      key={subItem.title}
-                      sx={{ pl: 5 }}
-                      onClick={() => navigate(subItem.path, { replace: true })}
-                      style={
-                        location.pathname === subItem.path
-                          ? { background: "#f4f4f4" }
-                          : null
-                      }
-                    >
-                      <ListItemIcon>{subItem.icon}</ListItemIcon>
-                      <ListItemText primary={subItem.title} />
-                    </ListItemButton>
-                  ))}
-                </List>
-              </Collapse>
-            </>
-          )
-        )}
-      </List>
-    </div>
-  );
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
-  return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
-      >
-        <Topbar handleDrawerToggle={handleDrawerToggle} />
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar />
-        {children}
-      </Box>
-    </Box>
-  );
+                <Topbar handleDrawerToggle={handleDrawerToggle} />
+            </AppBar>
+            <Box
+                component="nav"
+                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+                aria-label="mailbox folders"
+            >
+                <Drawer
+                    container={container}
+                    variant="temporary"
+                    open={mobileOpen}
+                    onClose={handleDrawerToggle}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
+                    sx={{
+                        display: { xs: "block", sm: "none" },
+                        "& .MuiDrawer-paper": {
+                            boxSizing: "border-box",
+                            width: drawerWidth,
+                        },
+                    }}
+                >
+                    {drawer}
+                </Drawer>
+                <Drawer
+                    variant="permanent"
+                    sx={{
+                        display: { xs: "none", sm: "block" },
+                        "& .MuiDrawer-paper": {
+                            boxSizing: "border-box",
+                            width: drawerWidth,
+                        },
+                    }}
+                    open
+                >
+                    {drawer}
+                </Drawer>
+            </Box>
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    p: 3,
+                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                }}
+            >
+                <Toolbar />
+                {children}
+            </Box>
+        </Box>
+    );
 }
 
 Layout.propTypes = {
-  window: PropTypes.func,
+    window: PropTypes.func,
 };
 
 export default Layout;
