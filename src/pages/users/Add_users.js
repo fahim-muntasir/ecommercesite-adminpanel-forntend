@@ -89,7 +89,7 @@ export default function Add_users() {
 
             try {
                 const { data } = await axios.post(
-                    `${process.env.REACT_APP_BACKEND_API_URL}/api/user`,
+                    `${process.env.REACT_APP_BACKEND_API_URL}/user`,
                     formData
                 );
                 setSuccess(data.msg);

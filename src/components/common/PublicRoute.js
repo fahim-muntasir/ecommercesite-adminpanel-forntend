@@ -1,9 +1,9 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { UseContext } from "../../context/context";
 
-export default function PublicRoute() {
+export default function PublicRoute({children}) {
     const { isLogin } = UseContext();
 
-    return !isLogin ? <Outlet /> : <Navigate to="/" replace={true} />;
+    return !isLogin ? children : <Navigate to="/" replace={true} />;
 }
