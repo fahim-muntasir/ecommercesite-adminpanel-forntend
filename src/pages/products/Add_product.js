@@ -166,6 +166,7 @@ export default function Add_product() {
           variant="outlined"
           type="text"
           name="title"
+          value={values.title}
           onChange={handleChange("title")}
           required
           helperText={errors?.["title"]?.msg}
@@ -202,6 +203,7 @@ export default function Add_product() {
           label="Price"
           variant="outlined"
           type="number"
+          value={values.price}
           name="price"
           onChange={handleChange("price")}
           required
@@ -212,6 +214,7 @@ export default function Add_product() {
           label="Slag"
           variant="outlined"
           type="text"
+          value={values.slag}
           name="slag"
           onChange={handleChange("slag")}
           required
@@ -223,6 +226,7 @@ export default function Add_product() {
           variant="outlined"
           type="text"
           name="description"
+          value={values.description}
           onChange={handleChange("description")}
           required
           helperText={errors?.["description"]?.msg}

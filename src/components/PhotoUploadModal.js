@@ -152,11 +152,15 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function PhotoUploadModal({ children, selectLength,  updateState, name }) {
+export default function PhotoUploadModal({
+  children,
+  selectLength,
+  updateState,
+  name,
+}) {
   const fileInputRef = useRef(null);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [selectedFile, setSelectedFile] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState(0);
   const [success, setSuccess] = React.useState("");
@@ -225,7 +229,6 @@ export default function PhotoUploadModal({ children, selectLength,  updateState,
 
       setLoading(false);
     }
-    setSelectedFile(file);
   };
 
   const avatarSelectController = (e, path) => {
@@ -234,14 +237,14 @@ export default function PhotoUploadModal({ children, selectLength,  updateState,
       if (selectedAvatar.length < selectLength) {
         copySelectedpath.push(path);
         setSelectedAvatar(copySelectedpath);
-        updateState({name, data: copySelectedpath});
+        updateState({ name, data: copySelectedpath });
       } else {
         alert(`You are not able to add image more then ${selectLength}`);
       }
     } else {
       const newpath = copySelectedpath.filter((item) => item !== path);
       setSelectedAvatar(newpath);
-      updateState({name, data: newpath});
+      updateState({ name, data: newpath });
     }
   };
 
@@ -365,7 +368,9 @@ export default function PhotoUploadModal({ children, selectLength,  updateState,
           </Box>
         </DialogContent>
         <DialogActions>
-          {selectedAvatar.length > 0 && <Button>Save</Button>}
+          {selectedAvatar.length > 0 && (
+            <Button onClose={handleClose}>Save</Button>
+          )}
           <Button autoFocus onClick={handleButtonClick}>
             Upload Photo <UploadIcon />
           </Button>
